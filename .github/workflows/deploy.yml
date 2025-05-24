@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   deploy:
     name: Deploy to VPS
@@ -16,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
@@ -28,7 +29,7 @@ jobs:
           if [ -f "manage.py" ]; then
             python manage.py test || echo "Some tests failed"
           else
-            echo "manage.py not found in root directory. Skipping tests."
+            echo "No manage.py found. Skipping tests."
           fi
 
       - name: Deploy to server via SSH
@@ -45,8 +46,9 @@ jobs:
 
             pip install -r requirements.txt
 
-            cd stocks_products
-            python ../manage.py migrate
-            python ../manage.py collectstatic --noinput --clear
+            # Убедитесь, что мы в корневой директории проекта
+            cd /root/my_crud_project/stocks_products
 
+            python manage.py migrate
+            python manage.py collectstatic --noinput --clear
             systemctl restart gunicorn
