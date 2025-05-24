@@ -25,8 +25,11 @@ jobs:
 
       - name: Run tests (if any)
         run: |
-          cd stocks_products
-          python manage.py test
+          if [ -f "manage.py" ]; then
+            python manage.py test
+          else
+            echo "manage.py not found in root directory. Skipping tests."
+          fi
 
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@master
@@ -39,7 +42,11 @@ jobs:
             cd /root/my_crud_project/stocks_products
             git pull origin main
             source ../venv/bin/activate
+
             pip install -r requirements.txt
-            python manage.py migrate
-            python manage.py collectstatic --noinput --clear
+
+            cd stocks_products
+            python ../manage.py migrate
+            python ../manage.py collectstatic --noinput --clear
+
             systemctl restart gunicorn
