@@ -57,3 +57,4 @@ manage.py migrate
 ```bash
 python manage.py runserver
 ```
+Updated at Sat May 24 15:29:45 MSK 2025
